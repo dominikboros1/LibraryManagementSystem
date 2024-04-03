@@ -31,12 +31,29 @@ void view_loans(struct User *user);
 void search_books();
 
 int main() {
+    FILE *file = fopen("books.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return 1;
+    }
+    while (fscanf(file, "%s %s %d", library[num_books].title, library[num_books].author, &library[num_books].copies_available) == 3) {
+        num_books++;
+    }
+    fclose(file);
+
     printf("Enter your name: ");
     fgets(user_name, sizeof(user_name), stdin);
     strtok(user_name, "\n");
-
+    strcpy(users[0].name, user_name);
     printf("Welcome, %s! Please use the following options:\n", user_name);
-        int caz;
+    menu1();
+    case_func();
+    }
+void clear_console() {
+    system("cls");
+}
+
+void menu1(){
     printf("\n\n\n");
     printf("**************************************************************************************\n");
     printf("*                                       MENU                                         *\n");
@@ -55,15 +72,15 @@ int main() {
     printf("*                                 0.Exit                                             *\n");
     printf("*                                                                                    *\n");
     printf("**************************************************************************************\n");
+}
+void case_func(){
+    int caz;
     scanf("%d", &caz);
-
-    switch (caz) {
+        switch (caz) {
         case 1:
             borrow_books(&users[0]);
-            break;
         case 2:
             return_books(&users[0]);
-            break;
         case 3:
             donate_books();
         case 4:
@@ -71,93 +88,155 @@ int main() {
         case 5:
             search_books();
         case 0:
-            printf("Program finished successfully!");
+            printf("Program finished successfully!\n");
             return 0;
             break;
         default:
-            printf("Choose one of the options from above to continue");
+            printf("Choose one of the options from above to continue\n");
             break;
     }
-    borrow_books(&users[0]);
-    return_books(&users[0]);
-    donate_books();
-    view_loans(&users[0]);
-    search_books();
 
+    printf("Program finished successfully!\n"); // Additional line to print message
     return 0;
 }
 
 void borrow_books(struct User *user) {
-    int i, j;
     char title[100];
+    int copies_available = 0;
+
+    FILE *file = fopen("books.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
 
     printf("Enter the title of the book you want to borrow: ");
-    fgets(title, sizeof(title), stdin);
-    strtok(title, "\n");
+    scanf("%s", title);
 
-    for (i = 0; i < num_books; i++) {
-        if (strcmp(library[i].title, title) == 0 && library[i].copies_available > 0) {
-            strcpy(user->borrowed_books[user->num_borrowed_books].title, library[i].title);
-            strcpy(user->borrowed_books[user->num_borrowed_books].author, library[i].author);
+    char temp_title[100], author[100];
+    while (fscanf(file, "%s %s %d", temp_title, author, &copies_available) == 3) {
+        if (strcmp(temp_title, title) == 0 && copies_available > 0) {
+            strcpy(user->borrowed_books[user->num_borrowed_books].title, temp_title);
+            strcpy(user->borrowed_books[user->num_borrowed_books].author, author);
             user->num_borrowed_books++;
-            library[i].copies_available--;
+            copies_available--;
+            clear_console();
             printf("Book \"%s\" borrowed successfully.\n", title);
+            menu1();
+            case_func();
+
+            FILE *temp_file = fopen("temp.txt", "w");
+            rewind(file);
+            while (fscanf(file, "%s %s %d", temp_title, author, &copies_available) == 3) {
+                if (strcmp(temp_title, title) == 0) {
+                    fprintf(temp_file, "%s %s %d\n", temp_title, author, copies_available);
+                } else {
+                    fprintf(temp_file, "%s %s %d\n", temp_title, author, copies_available);
+                }
+            }
+            fclose(file);
+            fclose(temp_file);
+            remove("books.txt");
+            rename("temp.txt", "books.txt");
             return;
         }
     }
+    clear_console();
     printf("Book \"%s\" is either not available or does not exist in the library.\n", title);
+    fclose(file);
+    menu1();
+    case_func();
 }
 
 void return_books(struct User *user) {
-    int i;
     char title[100];
 
-    printf("Enter the title of the book you want to return: ");
-    fgets(title, sizeof(title), stdin);
-    strtok(title, "\n"); // remove newline character from fgets
+    FILE *file = fopen("books.txt", "r");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
 
+    printf("Enter the title of the book you want to return: ");
+    scanf("%s", title);
+
+    int i;
     for (i = 0; i < user->num_borrowed_books; i++) {
         if (strcmp(user->borrowed_books[i].title, title) == 0) {
-            // Book found
+            int copies_available;
+            char temp_title[100], author[100];
+            FILE *temp_file = fopen("temp.txt", "w");
+            rewind(file);
+            while (fscanf(file, "%s %s %d", temp_title, author, &copies_available) == 3) {
+                if (strcmp(temp_title, title) == 0) {
+                    copies_available++;
+                    fprintf(temp_file, "%s %s %d\n", temp_title, author, copies_available);
+                } else {
+                    fprintf(temp_file, "%s %s %d\n", temp_title, author, copies_available);
+                }
+            }
+            fclose(file);
+            fclose(temp_file);
+            remove("books.txt");
+            rename("temp.txt", "books.txt");
+
+            for (; i < user->num_borrowed_books - 1; i++) {
+                strcpy(user->borrowed_books[i].title, user->borrowed_books[i + 1].title);
+                strcpy(user->borrowed_books[i].author, user->borrowed_books[i + 1].author);
+            }
             user->num_borrowed_books--;
+            clear_console();
             printf("Book \"%s\" returned successfully.\n", title);
+            menu1();
+            case_func();
             return;
         }
     }
-
+    clear_console();
     printf("Book \"%s\" was not borrowed by you.\n", title);
+    fclose(file);
+    menu1();
+    case_func();
 }
+
 
 void donate_books() {
     char title[100], author[100];
     int copies;
 
+    FILE *file = fopen("books.txt", "a");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
     printf("Enter the title of the book you want to donate: ");
-    fgets(title, sizeof(title), stdin);
-    strtok(title, "\n");
+    scanf("%s", title);
 
     printf("Enter the author of the book: ");
-    fgets(author, sizeof(author), stdin);
-    strtok(author, "\n");
+    scanf("%s", author);
 
     printf("Enter the number of copies you want to donate: ");
     scanf("%d", &copies);
 
-    strcpy(library[num_books].title, title);
-    strcpy(library[num_books].author, author);
-    library[num_books].copies_available = copies;
-    num_books++;
+    fprintf(file, "%s %s %d\n", title, author, copies);
+    fclose(file);
 
+    clear_console();
     printf("Book \"%s\" donated successfully.\n", title);
+    menu1();
+    case_func();
 }
 
 void view_loans(struct User *user) {
     int i;
-
-    printf("Books borrowed by %s %s:\n", user->name, user->surname);
+    clear_console();
+    printf("Books borrowed by %s:\n", user->name);
     for (i = 0; i < user->num_borrowed_books; i++) {
         printf("%d. %s by %s\n", i + 1, user->borrowed_books[i].title, user->borrowed_books[i].author);
     }
+    menu1();
+    case_func();
 }
 
 void search_books() {
@@ -165,13 +244,16 @@ void search_books() {
     char query[100];
 
     printf("Enter title or author to search: ");
-    fgets(query, sizeof(query), stdin);
-    strtok(query, "\n"); // remove newline character from fgets
+    scanf("%s", query);
+    getchar();
 
+    clear_console();
     printf("Search results:\n");
     for (i = 0; i < num_books; i++) {
-        if (strstr(library[i].title, query) || strstr(library[i].author, query)) {
+        if (strstr(library[i].title, query) != NULL || strstr(library[i].author, query) != NULL) {
             printf("%d. %s by %s (%d copies available)\n", i + 1, library[i].title, library[i].author, library[i].copies_available);
         }
     }
+    menu1();
+    case_func();
 }

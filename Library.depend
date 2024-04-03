@@ -11,3 +11,15 @@
 	<stdio.h>
 	<string.h>
 
+1712168191 source:c:\users\domin\documents\librarymanagementsystem\fileio.c
+	"fileIO.h"
+
+1712171602 c:\users\domin\documents\librarymanagementsystem\fileio.h
+	<stdio.h>
+	<string.h>
+
+1712171738 source:c:\users\domin\documents\librarymanagementsystem\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
