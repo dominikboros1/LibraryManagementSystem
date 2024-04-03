@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1712167075 source:c:\users\domin\documents\codeblocks\library\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1712164579 source:c:\users\domin\documents\codeblocks\library\fileio.c
+	"fileIO.h"
+
+1712166893 c:\users\domin\documents\codeblocks\library\fileio.h
+	<stdio.h>
+	<string.h>
+
