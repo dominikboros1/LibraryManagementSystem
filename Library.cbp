@@ -31,11 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="books.txt" />
 		<Unit filename="fileIO.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="fileIO.h" />
-		<Unit filename="library.csv" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

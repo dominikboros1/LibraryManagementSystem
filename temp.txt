@@ -1,2 +1,9 @@
-baltagul ion 6
-test test1 9
+O_scrisoare_pierduta Caragiale 6
+Moara_cu_noroc Ioan_Slavici 7
+Baltagul Mihail_Sadoveanu 5
+Ion Liviu_Rebreanu 3
+Ultima_noapte_de_dragoste_intaia_noapte_de_razboi Camil_Petrescu 5
+Patul_lui_Procust Camil_Petrescu 8
+Enigma_Otiliei George_Călinescu 9
+Maitreyi Mircea_Eliade 2
+Morometii Marin_Preda 4

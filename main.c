@@ -109,7 +109,8 @@ void borrow_books(struct User *user) {
         printf("Error opening file.\n");
         return;
     }
-
+    clear_console();
+    printf("#Please enter the name of the book with underlines instead of spaces#\n");
     printf("Enter the title of the book you want to borrow: ");
     scanf("%s", title);
 
@@ -156,7 +157,7 @@ void return_books(struct User *user) {
         printf("Error opening file.\n");
         return;
     }
-
+    clear_console();
     printf("Enter the title of the book you want to return: ");
     scanf("%s", title);
 
@@ -209,7 +210,7 @@ void donate_books() {
         printf("Error opening file.\n");
         return;
     }
-
+    clear_console();
     printf("Enter the title of the book you want to donate: ");
     scanf("%s", title);
 
@@ -242,7 +243,7 @@ void view_loans(struct User *user) {
 void search_books() {
     int i;
     char query[100];
-
+    clear_console();
     printf("Enter title or author to search: ");
     scanf("%s", query);
     getchar();
